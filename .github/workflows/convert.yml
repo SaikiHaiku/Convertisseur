@@ -1,1 +1,58 @@
+name: Convert Media
 
+
+on:
+push:
+paths:
+- 'inputs/**'
+workflow_dispatch: {}
+
+
+jobs:
+convert:
+runs-on: ubuntu-latest
+steps:
+- name: Checkout repo
+uses: actions/checkout@v4
+
+
+- name: Setup Python
+uses: actions/setup-python@v4
+with:
+python-version: '3.11'
+
+
+- name: Install ffmpeg
+run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+
+- name: Install requirements
+run: pip install -r converter/requirements.txt || true
+
+
+- name: Find input files
+id: find
+run: |
+mkdir -p outputs
+echo "FILES=$(ls -1 inputs || true)" >> $GITHUB_OUTPUT
+
+
+- name: Convert each input file
+if: steps.find.outputs.FILES != ''
+run: |
+mkdir -p outputs
+for f in inputs/* ; do
+filename=$(basename "${f}")
+# Example: create mp3 and mp4 outputs
+out_mp3="outputs/${filename%.*}.mp3"
+out_mp4="outputs/${filename%.*}.mp4"
+python converter/converter.py "${f}" "${out_mp3}" --audio-bitrate 192k || true
+python converter/converter.py "${f}" "${out_mp4}" --video-bitrate 1200k --scale -2:720 || true
+done
+
+
+- name: Upload outputs as artifact
+uses: actions/upload-artifact@v4
+with:
+name: converted-outputs
+path: outputs/
