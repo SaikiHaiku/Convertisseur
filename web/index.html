@@ -1,1 +1,15 @@
-
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Uploader pour conversion</title></head>
+<body>
+<h1>Uploader</h1>
+<p>Cette interface est un exemple. Pour raisons de sécurité, ne stockez pas de token dans du JS public.</p>
+<input type="file" id="file" />
+<button id="upload">Upload to repo (example)</button>
+<script>
+document.getElementById('upload').addEventListener('click', async ()=>{
+alert('See README: this requires a secure server-side step.');
+})
+</script>
+</body>
+</html>
