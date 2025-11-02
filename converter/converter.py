@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""Simple media converter using ffmpeg.
+Usage: python converter.py input_file output_file [--audio-bitrate 192k] [--video-bitrate 1200k] [--scale 1280:720]
+"""
+import argparse
 import shutil
 import subprocess
 import sys
@@ -81,9 +85,5 @@ sys.exit(2)
 cmd = build_cmd(args.input, args.output, args)
 run_ffmpeg(cmd)
 print('Conversion terminée:', args.output)
-
-
-
-
 if __name__ == '__main__':
 main()
